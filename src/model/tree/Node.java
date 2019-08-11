@@ -8,10 +8,12 @@ import java.util.Map;
 
 public class Node {
     private String filename;
+    private String path;
     private Node parent;
     private ArrayList<Node> children;
     private Map<Integer, Pair<Integer, Integer>> foundIndexes;
     private Integer key = 0;
+    private boolean isDirectory;
 
     public Node(String filename, Node parent, ArrayList<Node> children) {
         this.filename = filename;
@@ -24,6 +26,34 @@ public class Node {
         this.filename = filename;
         children = new ArrayList<>();
         foundIndexes = new HashMap<>();
+    }
+
+    public void directory() {
+        isDirectory = true;
+    }
+
+    public boolean isDirectory() {
+        return isDirectory;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public ArrayList<Node> getChildren() {
+        return children;
     }
 
     public void addChild(Node node) {

@@ -5,11 +5,16 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 
 public class PatternFinder {
-    private static int NO_OF_CHARS = 256;
+    private int NO_OF_CHARS = 256;
+    private String pattern;
 
-    private static int max (int a, int b) { return (a > b)? a: b; }
+    public PatternFinder(String pattern) {
+        this.pattern = pattern;
+    }
 
-    private static void badChar(char []str, int size, int badchar[])
+    private int max (int a, int b) { return (a > b)? a: b; }
+
+    private void badChar(char []str, int size, int badchar[])
     {
         int i;
 
@@ -20,11 +25,12 @@ public class PatternFinder {
             badchar[(int) str[i]] = i;
     }
 
-    public static ArrayList<Pair<Integer, Integer>> search(char txt[], char pat[])
+    public ArrayList<Pair<Integer, Integer>> search(char txt[])
     {
         ArrayList<Pair<Integer, Integer>> result = new ArrayList<>();
-        int m = pat.length;
+        int m = pattern.length();
         int n = txt.length;
+        char[] pat = pattern.toCharArray();
 
         int badchar[] = new int[NO_OF_CHARS];
 
