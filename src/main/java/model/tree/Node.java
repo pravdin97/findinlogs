@@ -74,4 +74,8 @@ public class Node {
     public String toString() {
         return filename;
     }
+
+    public Map<Integer, Pair<Integer, Integer>> getFoundIndexes() {
+        return foundIndexes;
+    }
 }
