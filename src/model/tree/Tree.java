@@ -41,4 +41,8 @@ public class Tree {
             }
         }
     }
+
+    public Node getRoot() {
+        return root;
+    }
 }

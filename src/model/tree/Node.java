@@ -69,4 +69,9 @@ public class Node {
         if (!foundIndexes.containsValue(indexes))
             foundIndexes.put(key++, indexes);
     }
+
+    @Override
+    public String toString() {
+        return filename;
+    }
 }

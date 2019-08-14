@@ -21,6 +21,10 @@ public class FSTraversal {
         this.rootDirectory = rootDirectory;
     }
 
+    public Tree getTree() {
+        return tree;
+    }
+
     /**
      * Поиск образца в файле
      * @param file - файл, в котором производится поиск
