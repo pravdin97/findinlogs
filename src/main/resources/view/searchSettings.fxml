@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.SearchSettingsController">
+  <children>
+    <Label layoutX="23.0" layoutY="30.0" text="Путь к папке">
+      <font>
+        <Font size="20.0" fx:id="x1" />
+      </font>
+    </Label>
+    <TextField fx:id="pathToFolder" layoutX="23.0" layoutY="69.0" prefHeight="42.0" prefWidth="450.0" />
+    <Button onAction="#specifyFolder" font="$x1" layoutX="490.0" layoutY="69.0" minHeight="14.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="82.0" text="..." />
+    <Label font="$x1" layoutX="23.0" layoutY="131.0" text="Текст поиска" />
+    <TextField id="searchText" fx:id="searchText" layoutX="23.0" layoutY="167.0" prefHeight="42.0" prefWidth="450.0" />
+    <Label font="$x1" layoutX="23.0" layoutY="222.0" text="Расширение" />
+    <TextField fx:id="extension" layoutX="23.0" layoutY="261.0" prefHeight="42.0" prefWidth="450.0" text="log" />
+    <Button onAction="#startSearch" font="$x1" layoutX="259.0" layoutY="333.0" minHeight="14.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="98.0" text="Поиск" />
+  </children>
+</AnchorPane>
