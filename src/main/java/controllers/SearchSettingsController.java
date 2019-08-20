@@ -24,6 +24,7 @@ public class SearchSettingsController {
     @FXML
     public void specifyFolder() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(new File("/var/log"));
         File directory = directoryChooser.showDialog(null);
         if (directory != null) {
             pathToFolder.setText(directory.getAbsolutePath());

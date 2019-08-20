@@ -10,16 +10,16 @@
 <AnchorPane fx:id="mainAnchorPane" prefHeight="670.0" prefWidth="950.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.MainController">
   <children>
     <AnchorPane fx:id="searchResultPane" layoutX="14.0" layoutY="76.0" prefHeight="580.0" prefWidth="290.0" />
-    <Button fx:id="backButton" layoutX="844.0" layoutY="14.0" mnemonicParsing="false" onAction="#previousWord" prefHeight="30.0" prefWidth="73.0" text="Назад" />
-    <Button fx:id="forwardButton" layoutX="747.0" layoutY="14.0" mnemonicParsing="false" onAction="#nextWord" prefHeight="30.0" prefWidth="73.0" text="Вперед" />
+    <Button fx:id="backButton" layoutX="747.0" layoutY="14.0" mnemonicParsing="false" onAction="#previousWord" prefHeight="30.0" prefWidth="73.0" text="Назад" />
+    <Button fx:id="forwardButton" layoutX="844.0" layoutY="14.0" mnemonicParsing="false" onAction="#nextWord" prefHeight="30.0" prefWidth="73.0" text="Вперед" />
     <Button fx:id="selectAllButton" layoutX="605.0" layoutY="14.0" mnemonicParsing="false" onAction="#selectAllWords" prefHeight="30.0" text="Выделить все" />
-    <Label layoutX="830.0" layoutY="49.0" text="/">
-      <font>
-        <Font size="20.0" fx:id="x1" />
-      </font>
-    </Label>
-    <Label fx:id="currentWordLabel" font="$x1" layoutX="795.0" layoutY="49.0" text="0" />
-    <Label fx:id="totalWordsLabel" font="$x1" layoutX="860.0" layoutY="49.0" text="0" />
+<!--    <Label layoutX="830.0" layoutY="49.0" text="/">-->
+<!--      <font>-->
+<!--        <Font size="20.0" fx:id="x1" />-->
+<!--      </font>-->
+<!--    </Label>-->
+    <Label fx:id="currentWordLabel" layoutX="795.0" layoutY="49.0" text="0" />
+<!--    <Label fx:id="totalWordsLabel" font="$x1" layoutX="860.0" layoutY="49.0" text="0" />-->
     <Button layoutX="42.0" layoutY="14.0" mnemonicParsing="false" onAction="#showSearchSettings" prefHeight="46.0" prefWidth="163.0" text="Параметры поиска" />
     <InlineCssTextArea fx:id="textArea"  editable="false" layoutX="310.0" layoutY="76" prefHeight="550" prefWidth="620" />
   </children>

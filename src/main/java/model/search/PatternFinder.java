@@ -5,7 +5,7 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 
 public class PatternFinder {
-    private int NO_OF_CHARS = 256;
+    private int NO_OF_CHARS = 2560;
     private String pattern;
 
     public PatternFinder(String pattern) {
@@ -25,7 +25,16 @@ public class PatternFinder {
             badchar[(int) str[i]] = i;
     }
 
-    public ArrayList<Pair<Integer, Integer>> search(char txt[])
+    public ArrayList<Pair<Integer, Integer>> stockSearch(String text) {
+        ArrayList<Pair<Integer, Integer>> result = new ArrayList<>();
+        if(text.contains(pattern)) {
+            int patternBeginIndex = text.indexOf(pattern);
+            result.add(new Pair<>(patternBeginIndex, patternBeginIndex + pattern.length()));
+        }
+        return result;
+    }
+
+    public ArrayList<Pair<Integer, Integer>> search(char[] txt)
     {
         ArrayList<Pair<Integer, Integer>> result = new ArrayList<>();
         int m = pattern.length();
@@ -57,8 +66,9 @@ public class PatternFinder {
                 begin += (begin+m < n)? m-badchar[txt[begin+m]] : 1;
             }
 
-            else
-                begin += max(1, j - badchar[txt[begin+j]]);
+            else {
+                begin += max(1, j - badchar[txt[begin + j]]);
+            }
         }
 
         return result;

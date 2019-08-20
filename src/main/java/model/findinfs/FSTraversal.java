@@ -1,12 +1,13 @@
 package model.findinfs;
 
 import javafx.util.Pair;
+import model.FSWorker;
 import model.search.PatternFinder;
 import model.tree.Node;
 import model.tree.Tree;
 
-import java.io.File;
-import java.io.IOException;
+import java.awt.*;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -25,21 +26,29 @@ public class FSTraversal {
         return tree;
     }
 
+    private String openFile(File file) {
+        String string = "";
+        try {
+            if (file.canRead()) {
+                string = new String(Files.readAllBytes(file.toPath()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return string;
+    }
+
     /**
      * Поиск образца в файле
      * @param file - файл, в котором производится поиск
      */
     private Node searchPattern(File file) {
-        char[] text = new char[0];
-        try {
-            String string = new String(Files.readAllBytes(file.toPath()));
-            text = string.toCharArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        String text = openFile(file);
+        String text = FSWorker.openFile(file.toPath());
         // файл прочитался корректно
-        if (text.length != 0) {
-            ArrayList<Pair<Integer, Integer>> result = patternFinder.search(text);
+        if (text.length() != 0) {
+            ArrayList<Pair<Integer, Integer>> result = patternFinder.search(text.toCharArray());
+//            ArrayList<Pair<Integer, Integer>> result = patternFinder.stockSearch(text.toString());
 
             // в файле найден образец
             if (result.size() != 0) {
@@ -85,6 +94,8 @@ public class FSTraversal {
                 traversal(file.toPath());
             }
             else {
+                if (!checkExtension(file.getName(), "log"))
+                    continue;
                 Node node = searchPattern(file);
                 if (node != null) {
                     parent.addChild(node);
@@ -103,5 +114,12 @@ public class FSTraversal {
         traversal(rootDirectory);
 
         tree.correct();
+    }
+
+    private boolean checkExtension(String name, String extension) {
+        String[] split = name.split("\\.");
+        if (split[split.length - 1].equals(extension))
+            return true;
+        else return false;
     }
 }

@@ -31,15 +31,22 @@ public class Tree {
         deleteEmptyDirs(root);
     }
 
-    private void deleteEmptyDirs(Node curr) {
+    private boolean deleteEmptyDirs(Node curr) {
+        boolean isDelete = false;
         if (curr.isDirectory()) {
-            if (curr.getChildren().size() == 0)
+            if (curr.getChildren().size() == 0 && curr.getParent() != null) {
                 curr.getParent().getChildren().remove(curr);
+                isDelete = true;
+            }
+            else isDelete = false;
 
-            for (Node child: curr.getChildren()) {
-                deleteEmptyDirs(child);
+            ArrayList<Node> children = curr.getChildren();
+            for (int i = 0; i < children.size(); i++) {
+                boolean res = deleteEmptyDirs(children.get(i));
+                if (res) i--;
             }
         }
+        return isDelete;
     }
 
     public Node getRoot() {

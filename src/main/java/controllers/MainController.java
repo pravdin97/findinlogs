@@ -12,17 +12,22 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import model.FSWorker;
 import model.findinfs.FSTraversal;
 import model.search.PatternFinder;
 import model.tree.Node;
 import model.tree.Tree;
+import org.fxmisc.richtext.Caret;
+import org.fxmisc.richtext.CaretNode;
 import org.fxmisc.richtext.InlineCssTextArea;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -74,6 +79,7 @@ public class MainController {
 
         Tree resultTree = fsTraversal.getTree();
         TreeItem<Node> nodeTreeItem = convertNodeToTreeItem(resultTree.getRoot());
+        setupTreeView();
         treeView.setRoot(nodeTreeItem);
     }
 
@@ -86,8 +92,10 @@ public class MainController {
     }
 
     private void setLabels() {
-        currentWordLabel.setText(Integer.toString(wordKey+1));
-        totalWordsLabel.setText(Integer.toString(currNode.getFoundIndexes().size()));
+//        currentWordLabel.setText(Integer.toString(wordKey+1));
+//        totalWordsLabel.setText(Integer.toString(currNode.getFoundIndexes().size()));
+        currentWordLabel.setText((wordKey + 1) + " / " +
+                currNode.getFoundIndexes().size());
     }
 
     @FXML
@@ -136,21 +144,37 @@ public class MainController {
         if (node.isDirectory())
             return;
         currNode = node;
-        String fileText = openFile(node.getPath());
+        String fileText = FSWorker.openFile(Paths.get(node.getPath()));
+
+        //debug
+        System.out.println("размер текста после открытия:" + fileText.length());
+
+
         textArea.clearStyle(0, textArea.getLength());
         textArea.clear();
-        textArea.appendText(fileText);
+//        textArea.appendText(fileText);
+        textArea.insertText(0, fileText);
+
+        //debug
+        System.out.println("textarea size:" + textArea.getLength());
+
+
         Map<Integer, Pair<Integer, Integer>> foundIndexes = node.getFoundIndexes();
-//        for (Integer key: foundIndexes.keySet()) {
-//            Pair<Integer, Integer> pair = foundIndexes.get(key);
-//            int begin = pair.getKey(), end = pair.getValue();
-//            highlightWord(begin, end + 1);
-//        }
         wordKey = 0;
         Pair<Integer, Integer> pair = foundIndexes.get(wordKey);
         highlightWord(pair.getKey(), pair.getValue() + 1);
 
         setLabels();
+    }
+
+    private String openFileByReadAllBytes(String path) {
+        String string = "";
+        try {
+            string = new String(Files.readAllBytes(Paths.get(path)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return string;
     }
 
     private String openFile(String path) {
@@ -164,7 +188,7 @@ public class MainController {
                     new BufferedReader(fileReader);
 
             while((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
+//                System.out.println(line);
                 result += line;
             }
 
