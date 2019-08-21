@@ -3,11 +3,9 @@ package controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class SearchSettingsController {
@@ -34,8 +32,15 @@ public class SearchSettingsController {
 
     @FXML
     public void startSearch() {
+        if (chosenFile == null)
+            try {
+                chosenFile = Paths.get(pathToFolder.getText()).toFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         if (chosenFile != null && !searchText.getText().equals("")) {
-            parent.startSearch(searchText.getText(), Paths.get(chosenFile.toURI()));
+            parent.startSearch(searchText.getText(), Paths.get(chosenFile.toURI()), extension.getText());
             Stage stage = (Stage) searchText.getScene().getWindow();
             stage.close();
         }

@@ -5,7 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
+
 <?import org.fxmisc.richtext.InlineCssTextArea?>
+<?import org.fxmisc.flowless.VirtualizedScrollPane?>
 
 <AnchorPane fx:id="mainAnchorPane" prefHeight="670.0" prefWidth="950.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.MainController">
   <children>
@@ -19,8 +21,13 @@
 <!--      </font>-->
 <!--    </Label>-->
     <Label fx:id="currentWordLabel" layoutX="795.0" layoutY="49.0" text="0" />
-<!--    <Label fx:id="totalWordsLabel" font="$x1" layoutX="860.0" layoutY="49.0" text="0" />-->
     <Button layoutX="42.0" layoutY="14.0" mnemonicParsing="false" onAction="#showSearchSettings" prefHeight="46.0" prefWidth="163.0" text="Параметры поиска" />
-    <InlineCssTextArea fx:id="textArea"  editable="false" layoutX="310.0" layoutY="76" prefHeight="550" prefWidth="620" />
+    <AnchorPane layoutX="310.0" layoutY="76.0" prefHeight="550" prefWidth="620">
+      <VirtualizedScrollPane fx:id="scroll">
+        <content>
+            <InlineCssTextArea fx:id="textArea"  editable="false" prefWidth="600" prefHeight="540" />
+        </content>
+    </VirtualizedScrollPane>
+    </AnchorPane>
   </children>
 </AnchorPane>

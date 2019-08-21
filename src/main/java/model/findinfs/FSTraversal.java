@@ -6,9 +6,7 @@ import model.search.PatternFinder;
 import model.tree.Node;
 import model.tree.Tree;
 
-import java.awt.*;
-import java.io.*;
-import java.nio.file.Files;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -16,26 +14,21 @@ public class FSTraversal {
     private PatternFinder patternFinder;
     private Path rootDirectory;
     private Tree tree;
+    private String extension;
 
     public FSTraversal(PatternFinder patternFinder, Path rootDirectory) {
         this.patternFinder = patternFinder;
         this.rootDirectory = rootDirectory;
+        //по умолчанию
+        this.extension = "log";
     }
 
     public Tree getTree() {
         return tree;
     }
 
-    private String openFile(File file) {
-        String string = "";
-        try {
-            if (file.canRead()) {
-                string = new String(Files.readAllBytes(file.toPath()));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return string;
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     /**
@@ -43,12 +36,10 @@ public class FSTraversal {
      * @param file - файл, в котором производится поиск
      */
     private Node searchPattern(File file) {
-//        String text = openFile(file);
         String text = FSWorker.openFile(file.toPath());
         // файл прочитался корректно
         if (text.length() != 0) {
             ArrayList<Pair<Integer, Integer>> result = patternFinder.search(text.toCharArray());
-//            ArrayList<Pair<Integer, Integer>> result = patternFinder.stockSearch(text.toString());
 
             // в файле найден образец
             if (result.size() != 0) {
@@ -62,7 +53,6 @@ public class FSTraversal {
                 return node;
             }
         }
-
         return null;
     }
 
@@ -72,7 +62,14 @@ public class FSTraversal {
      */
     private void traversal(Path path) {
         File directory = path.toFile();
+
+        if (!directory.canRead())
+            return;
+
         File[] filesInDirectory = directory.listFiles();
+
+        if (filesInDirectory == null)
+            return;
 
         // находим родителя в дереве
         Node parent = tree.findNode(path.toString());
@@ -94,7 +91,7 @@ public class FSTraversal {
                 traversal(file.toPath());
             }
             else {
-                if (!checkExtension(file.getName(), "log"))
+                if (!checkExtension(file.getName()))
                     continue;
                 Node node = searchPattern(file);
                 if (node != null) {
@@ -116,7 +113,7 @@ public class FSTraversal {
         tree.correct();
     }
 
-    private boolean checkExtension(String name, String extension) {
+    private boolean checkExtension(String name) {
         String[] split = name.split("\\.");
         if (split[split.length - 1].equals(extension))
             return true;

@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,15 +18,10 @@ import model.findinfs.FSTraversal;
 import model.search.PatternFinder;
 import model.tree.Node;
 import model.tree.Tree;
-import org.fxmisc.richtext.Caret;
-import org.fxmisc.richtext.CaretNode;
+import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.InlineCssTextArea;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -36,10 +32,13 @@ public class MainController {
     private AnchorPane searchResultPane;
 
     @FXML
+    private VirtualizedScrollPane scroll;
+
+    @FXML
     private InlineCssTextArea textArea;
 
     @FXML
-    private Label currentWordLabel, totalWordsLabel;
+    private Label currentWordLabel;
 
     private Integer wordKey;
     private Node currNode;
@@ -61,7 +60,12 @@ public class MainController {
             TreeItem<Node> selectedItem = (TreeItem<Node>) newValue;
             //debug
             System.out.println("Selected Text : " + selectedItem.getValue());
-            showSearchResultInFile(selectedItem.getValue());
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    showSearchResultInFile(selectedItem.getValue());
+                }
+            });
         });
     }
 
@@ -71,12 +75,25 @@ public class MainController {
                 "-fx-font-family: \"Segoe UI Light\";");
     }
 
-    public void startSearch(String pattern, Path path) {
+    public void startSearch(String pattern, Path path, String extension) {
         PatternFinder patternFinder = new PatternFinder(pattern);
-//        FSTraversal fsTraversal = new FSTraversal(patternFinder, Paths.get(System.getProperty("user.home"), "Documents"));
         FSTraversal fsTraversal = new FSTraversal(patternFinder, path);
-        fsTraversal.search();
+        if (!extension.equals(""))
+            fsTraversal.setExtension(extension);
+//        Task task = new Task<Void>() {
+//            @Override
+//            public Void call() {
+//                fsTraversal.search();
+//                Tree resultTree = fsTraversal.getTree();
+//                TreeItem<Node> nodeTreeItem = convertNodeToTreeItem(resultTree.getRoot());
+//                setupTreeView();
+//                treeView.setRoot(nodeTreeItem);
+//                return null;
+//            }
+//        };
+//        new Thread(task).start();
 
+        fsTraversal.search();
         Tree resultTree = fsTraversal.getTree();
         TreeItem<Node> nodeTreeItem = convertNodeToTreeItem(resultTree.getRoot());
         setupTreeView();
@@ -92,14 +109,18 @@ public class MainController {
     }
 
     private void setLabels() {
-//        currentWordLabel.setText(Integer.toString(wordKey+1));
-//        totalWordsLabel.setText(Integer.toString(currNode.getFoundIndexes().size()));
         currentWordLabel.setText((wordKey + 1) + " / " +
                 currNode.getFoundIndexes().size());
     }
 
+    private void moveToWord(int pos) {
+        textArea.moveTo(pos);
+    }
+
     @FXML
     public void nextWord() {
+        if (currNode == null)
+            return;
         Map<Integer, Pair<Integer, Integer>> foundIndexes = currNode.getFoundIndexes();
         if (foundIndexes.size() == 1)
             return;
@@ -112,10 +133,13 @@ public class MainController {
         highlightWord(pair.getKey(), pair.getValue() + 1);
 
         setLabels();
+        moveToWord(pair.getKey());
     }
 
     @FXML
     public void previousWord() {
+        if (currNode == null)
+            return;
         Map<Integer, Pair<Integer, Integer>> foundIndexes = currNode.getFoundIndexes();
         if (foundIndexes.size() == 1)
             return;
@@ -132,6 +156,8 @@ public class MainController {
 
     @FXML
     public void selectAllWords() {
+        if (currNode == null)
+            return;
         Map<Integer, Pair<Integer, Integer>> foundIndexes = currNode.getFoundIndexes();
         for (Integer key: foundIndexes.keySet()) {
             Pair<Integer, Integer> pair = foundIndexes.get(key);
@@ -146,18 +172,9 @@ public class MainController {
         currNode = node;
         String fileText = FSWorker.openFile(Paths.get(node.getPath()));
 
-        //debug
-        System.out.println("размер текста после открытия:" + fileText.length());
-
-
         textArea.clearStyle(0, textArea.getLength());
         textArea.clear();
-//        textArea.appendText(fileText);
         textArea.insertText(0, fileText);
-
-        //debug
-        System.out.println("textarea size:" + textArea.getLength());
-
 
         Map<Integer, Pair<Integer, Integer>> foundIndexes = node.getFoundIndexes();
         wordKey = 0;
@@ -165,42 +182,6 @@ public class MainController {
         highlightWord(pair.getKey(), pair.getValue() + 1);
 
         setLabels();
-    }
-
-    private String openFileByReadAllBytes(String path) {
-        String string = "";
-        try {
-            string = new String(Files.readAllBytes(Paths.get(path)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return string;
-    }
-
-    private String openFile(String path) {
-        String line, result = "";
-
-        try {
-            FileReader fileReader =
-                    new FileReader(path);
-
-            BufferedReader bufferedReader =
-                    new BufferedReader(fileReader);
-
-            while((line = bufferedReader.readLine()) != null) {
-//                System.out.println(line);
-                result += line;
-            }
-
-            bufferedReader.close();
-        }
-        catch(FileNotFoundException ex) {
-            System.err.println(ex);
-        }
-        catch(IOException ex) {
-            System.err.println(ex);
-        }
-        return result;
     }
 
     private TreeItem<Node> convertNodeToTreeItem(Node node) {

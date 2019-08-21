@@ -34,17 +34,17 @@ public class Tree {
     private boolean deleteEmptyDirs(Node curr) {
         boolean isDelete = false;
         if (curr.isDirectory()) {
-            if (curr.getChildren().size() == 0 && curr.getParent() != null) {
-                curr.getParent().getChildren().remove(curr);
-                isDelete = true;
-            }
-            else isDelete = false;
-
             ArrayList<Node> children = curr.getChildren();
             for (int i = 0; i < children.size(); i++) {
                 boolean res = deleteEmptyDirs(children.get(i));
                 if (res) i--;
             }
+
+            if (curr.getChildren().size() == 0 && curr != root) {
+                curr.getParent().getChildren().remove(curr);
+                isDelete = true;
+            }
+            else isDelete = false;
         }
         return isDelete;
     }
