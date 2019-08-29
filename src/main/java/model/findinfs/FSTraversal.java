@@ -75,7 +75,7 @@ public class FSTraversal {
         Node parent = tree.findNode(path.toString());
 
         for (File file: filesInDirectory) {
-            System.out.println(file.getName());
+//            System.out.println(file.getName());
 
             if (file.isDirectory()) {
                 // создаем новый узел

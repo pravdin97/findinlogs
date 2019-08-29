@@ -80,24 +80,13 @@ public class MainController {
         FSTraversal fsTraversal = new FSTraversal(patternFinder, path);
         if (!extension.equals(""))
             fsTraversal.setExtension(extension);
-//        Task task = new Task<Void>() {
-//            @Override
-//            public Void call() {
-//                fsTraversal.search();
-//                Tree resultTree = fsTraversal.getTree();
-//                TreeItem<Node> nodeTreeItem = convertNodeToTreeItem(resultTree.getRoot());
-//                setupTreeView();
-//                treeView.setRoot(nodeTreeItem);
-//                return null;
-//            }
-//        };
-//        new Thread(task).start();
-
-        fsTraversal.search();
-        Tree resultTree = fsTraversal.getTree();
-        TreeItem<Node> nodeTreeItem = convertNodeToTreeItem(resultTree.getRoot());
-        setupTreeView();
-        treeView.setRoot(nodeTreeItem);
+        Platform.runLater(() -> {
+            fsTraversal.search();
+            Tree resultTree = fsTraversal.getTree();
+            TreeItem<Node> nodeTreeItem = convertNodeToTreeItem(resultTree.getRoot());
+            setupTreeView();
+            treeView.setRoot(nodeTreeItem);
+        });
     }
 
     private void highlightWord(int begin, int end) {
